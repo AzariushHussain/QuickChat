@@ -1,6 +1,8 @@
 const { createUser, findUserByPhone } = require('../models/userModel');
 const { successResponse, errorResponse ,MESSAGE} = require('../utils/response');
 const { constants } = require('../utils/constants');
+const { createVerification, verifyOtp } = require('../utils/twilioService.js');
+
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -18,8 +20,8 @@ const verifyUserOtp = async (req, res) => {
         const user = await findUserByPhone(phone);
         
         if (user) {
-            // const verificationResult = await verifyOtp(phone, code);
-            const verificationResult = {status:"approved"};
+            const verificationResult = await verifyOtp(phone, code);
+            // const verificationResult = {status:"approved"};
             if(!verificationResult) return errorResponse(res, MESSAGE.FAILED_TO_LOGIN, 200);
             if (verificationResult.status === 'approved') {
 
@@ -46,6 +48,7 @@ const loginWithOtp = async (req, res) => {
     try {
 
         let user = await findUserByPhone(phone);
+        const otp_status = createVerification(phone);
         if (!user) {
             user = await createUser({
                 phone: phone,
