@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const  { responseMessages } = require('../utils/constants');
-const  formatMessage  = require('../utils/messageformatter');
+const  formatMessage  = require('../utils/messageFormatter');
 
 const JWT_SECRET = process.env.JWT_SECRET
 
